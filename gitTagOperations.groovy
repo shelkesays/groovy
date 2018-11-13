@@ -46,6 +46,7 @@ def getLatestLocalTag() {
  */
 def getRemoteTagMap(String gitUrl, boolean sortDesc = false) {
   def remoteTagList = getRemoteTagList(gitUrl)
+
   def tagMap = [:]
   for(String tag in remoteTagList) {
     def tagSplit = tag.split('_')
@@ -63,7 +64,7 @@ def getRemoteTagMap(String gitUrl, boolean sortDesc = false) {
     tagMap = tagMap.sort { a, b -> b.value <=> a.value }
   }
 
-  return tagMap;
+  return tagMap
 }
 
 /*
