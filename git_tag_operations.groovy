@@ -1,3 +1,6 @@
+/*
+ * Get remote tag list from git repository.
+ */
 def getRemoteTagList = { gitUrl ->
   def gettags = ("git ls-remote --tags ${gitUrl}").execute()
 
@@ -11,11 +14,17 @@ def getRemoteTagList = { gitUrl ->
   return tagList
 }
 
+/*
+ * Get Latest Remote Tag from git repository
+ */
 def getLatestRemoteTag = {gitUrl ->
   def tagList = getRemoteTagList(gitUrl)
   return tagList?.find { true }
 }
 
+/*
+ * Get latest tag from local git repository
+ */
 def getLatestLocalTag = {->
   def gettags = ("git tag --sort=-creatordate").execute()
 
@@ -25,6 +34,8 @@ def getLatestLocalTag = {->
 }
 
 /**
+ * Get remote tag map based on the predefined structure
+ *
  * Tag must be in the format: {Task-Name}_{Branch-name}_{Build-version}_{Timestamp-of-tag-creation}
  *
  * Tag creation timestamp should be in the format: {year}-{month}-{date}-{TimeInHours}
@@ -54,6 +65,9 @@ def getRemoteTagMap = {gitUrl, sortDesc = false ->
   return tagMap;
 }
 
+/*
+ * Get first key from map provided
+ */
 def getFirstKeyFromMap = {tagMap ->
   return tagMap.keySet().iterator().next()
 }
