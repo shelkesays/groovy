@@ -1,7 +1,7 @@
 /*
  * Get remote tag list from git repository.
  */
-def getRemoteTagList = { gitUrl ->
+def getRemoteTagList(String gitUrl) {
   def gettags = ("git ls-remote --tags ${gitUrl}").execute()
 
   def tagList = gettags.text.readLines()
@@ -10,6 +10,7 @@ def getRemoteTagList = { gitUrl ->
          .findAll { it.startsWith('hello') }
          .reverse()
 
+  // Removing duplicates and all the entries with ^{} at the end
   tagList.removeAll { it.endsWith('^{}') }
   return tagList
 }
@@ -17,7 +18,7 @@ def getRemoteTagList = { gitUrl ->
 /*
  * Get Latest Remote Tag from git repository
  */
-def getLatestRemoteTag = {gitUrl ->
+def getLatestRemoteTag(String gitUrl) {
   def tagList = getRemoteTagList(gitUrl)
   return tagList?.find { true }
 }
@@ -25,7 +26,7 @@ def getLatestRemoteTag = {gitUrl ->
 /*
  * Get latest tag from local git repository
  */
-def getLatestLocalTag = {->
+def getLatestLocalTag() {
   def gettags = ("git tag --sort=-creatordate").execute()
 
   def latesttag = gettags.text.readLines()
@@ -43,7 +44,7 @@ def getLatestLocalTag = {->
  * Time in hours should be in the format: {hours}{minutes} => Without any space or special character in
  * between.
  */
-def getRemoteTagMap = {gitUrl, sortDesc = false ->
+def getRemoteTagMap(String gitUrl, boolean sortDesc = false) {
   def remoteTagList = getRemoteTagList(gitUrl)
   def tagMap = [:]
   for(String tag in remoteTagList) {
@@ -68,11 +69,11 @@ def getRemoteTagMap = {gitUrl, sortDesc = false ->
 /*
  * Get first key from map provided
  */
-def getFirstKeyFromMap = {tagMap ->
+def getFirstKeyFromMap(tagMap) {
   return tagMap.keySet().iterator().next()
 }
 
-def gitUrl = "https://github.com/srahul07/learning-js.git"
+def String gitUrl = "https://github.com/srahul07/learning-js.git"
 remoteTagMap = getRemoteTagMap(gitUrl, true)
 println("Sorted: " + getFirstKeyFromMap(remoteTagMap))
 println("Remote: " + getLatestRemoteTag(gitUrl))
