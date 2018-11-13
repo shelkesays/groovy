@@ -32,7 +32,8 @@ def getLatestLocalTag = {->
  * Time in hours should be in the format: {hours}{minutes} => Without any space or special character in
  * between.
  */
-def createTagMap = {remoteTagList->
+def getRemoteTagMap = {gitUrl, sortDesc = false ->
+  def remoteTagList = getRemoteTagList(gitUrl)
   def tagMap = [:]
   for(String tag in remoteTagList) {
     def tagSplit = tag.split('_')
@@ -45,14 +46,21 @@ def createTagMap = {remoteTagList->
       }
     }
   }
-  tagMap = tagMap.sort { a, b -> b.value <=> a.value }
 
-  return tagMap.keySet().iterator().next();
+  if(sortDesc) {
+    tagMap = tagMap.sort { a, b -> b.value <=> a.value }
+  }
+
+  return tagMap;
+}
+
+def getFirstKeyFromMap = {tagMap ->
+  return tagMap.keySet().iterator().next()
 }
 
 def gitUrl = "https://github.com/srahul07/learning-js.git"
-def remoteTagList = getRemoteTagList(gitUrl)
-println("Sorted: " + createTagMap(remoteTagList))
+remoteTagMap = getRemoteTagMap(gitUrl, true)
+println("Sorted: " + getFirstKeyFromMap(remoteTagMap))
 println("Remote: " + getLatestRemoteTag(gitUrl))
 println("Local: " + getLatestLocalTag())
 
